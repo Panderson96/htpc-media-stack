@@ -51,7 +51,7 @@ metadata:
     traefik.ingress.kubernetes.io/router.entrypoints: web
 spec:
   rules:
-    - host: jellyfin.local
+    - host: jellyfin.media.local
       http:
         paths:
           - path: /
