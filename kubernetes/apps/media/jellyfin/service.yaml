@@ -7,14 +7,16 @@ metadata:
   labels:
     app: jellyfin
 spec:
-  type: ClusterIP
+  type: NodePort
   ports:
     - port: 8096
       targetPort: 8096
+      nodePort: 30096
       protocol: TCP
       name: web
     - port: 8920
       targetPort: 8920
+      nodePort: 30920
       protocol: TCP
       name: web-https
   selector:
@@ -51,7 +53,7 @@ metadata:
     traefik.ingress.kubernetes.io/router.entrypoints: web
 spec:
   rules:
-    - host: jellyfin.media.local
+    - host: jellyfin.brzrkr.io
       http:
         paths:
           - path: /

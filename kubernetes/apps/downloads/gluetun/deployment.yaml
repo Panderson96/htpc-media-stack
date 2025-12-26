@@ -45,9 +45,22 @@ spec:
                   key: OPENVPN_PASSWORD
             # ProtonVPN specific settings
             - name: SERVER_COUNTRIES
-              value: "Netherlands" # Good for privacy, change as needed
+              value: "United States" # Closest for best speeds
             - name: FREE_ONLY
               value: "false" # Set to "true" if using free tier
+            # P2P servers required for port forwarding
+            - name: PORT_FORWARD_ONLY
+              value: "true"
+            # Port forwarding - required for torrent seeding/downloading
+            - name: VPN_PORT_FORWARDING
+              value: "on"
+            - name: VPN_PORT_FORWARDING_PROVIDER
+              value: "protonvpn"
+            # DNS settings - use external DNS to avoid internal DNS issues
+            - name: DOT
+              value: "off"
+            - name: DNS_ADDRESS
+              value: "1.1.1.1"
             # Health check endpoint
             - name: HEALTH_VPN_DURATION_INITIAL
               value: "30s"
@@ -67,10 +80,10 @@ spec:
               mountPath: /gluetun
           resources:
             requests:
-              memory: "128Mi"
+              memory: "256Mi"
               cpu: "100m"
             limits:
-              memory: "256Mi"
+              memory: "512Mi"
               cpu: "500m"
           livenessProbe:
             httpGet:

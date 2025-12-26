@@ -25,7 +25,7 @@ metadata:
     traefik.ingress.kubernetes.io/router.entrypoints: web
 spec:
   rules:
-    - host: sonarr.media.local
+    - host: sonarr.brzrkr.io
       http:
         paths:
           - path: /
