@@ -1,8 +1,8 @@
 ---
-# qBittorrent is deployed as a sidecar with Gluetun
+# Transmission is deployed as a sidecar with Gluetun
 # See ../gluetun/deployment.yaml for the combined deployment
 # This kustomization exists for organizational purposes
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources: []
-# qBittorrent manifests are in the gluetun folder as they share a pod
+# Transmission manifests are in the gluetun folder as they share a pod

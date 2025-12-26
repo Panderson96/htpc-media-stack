@@ -38,6 +38,7 @@
 
             # Development
             git
+            gh               # GitHub CLI
             curl
             wget
           ];
