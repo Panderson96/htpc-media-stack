@@ -1,0 +1,63 @@
+---
+# Jellyseerr - Media request and discovery tool
+# User-friendly interface for requesting movies/TV shows
+# Integrates with Sonarr, Radarr, and Jellyfin
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jellyseerr
+  namespace: media
+  labels:
+    app: jellyseerr
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: jellyseerr
+  template:
+    metadata:
+      labels:
+        app: jellyseerr
+    spec:
+      containers:
+        - name: jellyseerr
+          image: fallenbagel/jellyseerr:latest
+          env:
+            - name: TZ
+              value: "America/New_York"
+            - name: LOG_LEVEL
+              value: "info"
+          ports:
+            - containerPort: 5055
+              name: web
+              protocol: TCP
+          volumeMounts:
+            - name: config
+              mountPath: /app/config
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "1Gi"
+              cpu: "1000m"
+          livenessProbe:
+            httpGet:
+              path: /api/v1/status
+              port: 5055
+            initialDelaySeconds: 30
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /api/v1/status
+              port: 5055
+            initialDelaySeconds: 10
+            periodSeconds: 10
+
+      volumes:
+        - name: config
+          hostPath:
+            path: /data/media/config/jellyseerr
+            type: DirectoryOrCreate

@@ -1,0 +1,23 @@
+# Nix
+result
+result-*
+.direnv/
+
+# Secrets (should use SOPS, but just in case)
+*.secret
+*.key
+!*.yaml
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# k3s local files (if any)
+*.kubeconfig

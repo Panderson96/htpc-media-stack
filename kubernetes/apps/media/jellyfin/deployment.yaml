@@ -1,0 +1,104 @@
+---
+# Jellyfin - Open source media server
+# Streams your movies and TV shows to any device
+# Includes hardware transcoding support for Intel QSV (if available)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jellyfin
+  namespace: media
+  labels:
+    app: jellyfin
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: jellyfin
+  template:
+    metadata:
+      labels:
+        app: jellyfin
+    spec:
+      containers:
+        - name: jellyfin
+          image: lscr.io/linuxserver/jellyfin:latest
+          env:
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+            - name: TZ
+              value: "America/New_York"
+            # Enable hardware acceleration (Intel QSV)
+            # Uncomment if your Beelink has Intel iGPU
+            # - name: JELLYFIN_FFmpeg__probesize
+            #   value: "50000000"
+            # - name: JELLYFIN_FFmpeg__analyzeduration
+            #   value: "50000000"
+          ports:
+            - containerPort: 8096
+              name: web
+              protocol: TCP
+            - containerPort: 8920
+              name: web-https
+              protocol: TCP
+            - containerPort: 7359
+              name: discovery
+              protocol: UDP
+            - containerPort: 1900
+              name: dlna
+              protocol: UDP
+          volumeMounts:
+            - name: config
+              mountPath: /config
+            - name: movies
+              mountPath: /data/movies
+              readOnly: true
+            - name: tv
+              mountPath: /data/tv
+              readOnly: true
+            # Uncomment for Intel QSV hardware transcoding
+            # - name: render-device
+            #   mountPath: /dev/dri/renderD128
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "200m"
+            limits:
+              memory: "4Gi"
+              cpu: "4000m"
+              # Uncomment for Intel GPU access
+              # gpu.intel.com/i915: 1
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8096
+            initialDelaySeconds: 30
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8096
+            initialDelaySeconds: 10
+            periodSeconds: 10
+
+      volumes:
+        - name: config
+          hostPath:
+            path: /data/media/config/jellyfin
+            type: DirectoryOrCreate
+        - name: movies
+          hostPath:
+            path: /data/media/library/movies
+            type: DirectoryOrCreate
+        - name: tv
+          hostPath:
+            path: /data/media/library/tv
+            type: DirectoryOrCreate
+        # Uncomment for Intel QSV hardware transcoding
+        # - name: render-device
+        #   hostPath:
+        #     path: /dev/dri/renderD128
+        #     type: CharDevice

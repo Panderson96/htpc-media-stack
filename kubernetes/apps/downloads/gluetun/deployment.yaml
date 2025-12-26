@@ -1,0 +1,124 @@
+---
+# Gluetun VPN container - routes qBittorrent traffic through ProtonVPN
+# qBittorrent runs as a sidecar sharing Gluetun's network namespace
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gluetun-qbittorrent
+  namespace: downloads
+  labels:
+    app: gluetun-qbittorrent
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate  # Required for VPN containers
+  selector:
+    matchLabels:
+      app: gluetun-qbittorrent
+  template:
+    metadata:
+      labels:
+        app: gluetun-qbittorrent
+    spec:
+      containers:
+        # Gluetun VPN container
+        - name: gluetun
+          image: qmcgaw/gluetun:latest
+          securityContext:
+            capabilities:
+              add:
+                - NET_ADMIN
+          env:
+            - name: VPN_SERVICE_PROVIDER
+              value: "protonvpn"
+            - name: VPN_TYPE
+              value: "openvpn"
+            - name: OPENVPN_USER
+              valueFrom:
+                secretKeyRef:
+                  name: gluetun-vpn-credentials
+                  key: OPENVPN_USER
+            - name: OPENVPN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: gluetun-vpn-credentials
+                  key: OPENVPN_PASSWORD
+            # ProtonVPN specific settings
+            - name: SERVER_COUNTRIES
+              value: "Netherlands"  # Good for privacy, change as needed
+            - name: FREE_ONLY
+              value: "false"  # Set to "true" if using free tier
+            # Health check endpoint
+            - name: HEALTH_VPN_DURATION_INITIAL
+              value: "30s"
+            - name: HEALTH_SUCCESS_WAIT_DURATION
+              value: "10s"
+            # Firewall - allow LAN access
+            - name: FIREWALL_INPUT_PORTS
+              value: "8080"  # qBittorrent WebUI
+            - name: FIREWALL_OUTBOUND_SUBNETS
+              value: "10.0.0.0/8,172.16.0.0/12,192.168.0.0/16"  # Allow LAN
+          ports:
+            - containerPort: 8080
+              name: qbit-web
+              protocol: TCP
+          volumeMounts:
+            - name: gluetun-data
+              mountPath: /gluetun
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 60
+            periodSeconds: 30
+            failureThreshold: 5
+
+        # qBittorrent container - shares network with Gluetun
+        - name: qbittorrent
+          image: lscr.io/linuxserver/qbittorrent:latest
+          env:
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+            - name: TZ
+              value: "America/New_York"  # Change to your timezone
+            - name: WEBUI_PORT
+              value: "8080"
+          volumeMounts:
+            - name: qbittorrent-config
+              mountPath: /config
+            - name: downloads
+              mountPath: /downloads
+            - name: media-library
+              mountPath: /media
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "2Gi"
+              cpu: "2000m"
+
+      volumes:
+        - name: gluetun-data
+          emptyDir: {}
+        - name: qbittorrent-config
+          hostPath:
+            path: /data/media/config/qbittorrent
+            type: DirectoryOrCreate
+        - name: downloads
+          hostPath:
+            path: /data/media/downloads
+            type: DirectoryOrCreate
+        - name: media-library
+          hostPath:
+            path: /data/media/library
+            type: DirectoryOrCreate
