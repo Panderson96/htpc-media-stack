@@ -1,7 +1,7 @@
 ---
 # Jellyfin - Open source media server
 # Streams your movies and TV shows to any device
-# Includes hardware transcoding support for Intel QSV (if available)
+# Includes hardware transcoding support via VA-API (AMD Radeon 680M)
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -53,6 +53,10 @@ spec:
             - name: tv
               mountPath: /data/tv
               readOnly: true
+            - name: dri
+              mountPath: /dev/dri
+          securityContext:
+            privileged: true
           resources:
             requests:
               memory: "1Gi"
@@ -86,3 +90,7 @@ spec:
           hostPath:
             path: /data/media/library/tv
             type: DirectoryOrCreate
+        - name: dri
+          hostPath:
+            path: /dev/dri
+            type: Directory
