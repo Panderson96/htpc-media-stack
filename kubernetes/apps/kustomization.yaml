@@ -4,3 +4,4 @@ kind: Kustomization
 resources:
   - downloads
   - media
+  - homepage
