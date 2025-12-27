@@ -51,6 +51,12 @@ data:
             icon: jellyfin.png
             href: http://jellyfin.brzrkr.io
             description: Media Server
+            widget:
+              type: jellyfin
+              url: http://jellyfin.media.svc.cluster.local:8096
+              key: 2de3f8574ccd49f5902d92131fe006ed
+              enableBlocks: true
+              enableNowPlaying: true
         - Sonarr:
             icon: sonarr.png
             href: http://sonarr.brzrkr.io
