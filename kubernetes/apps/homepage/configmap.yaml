@@ -51,12 +51,6 @@ data:
             icon: jellyfin.png
             href: http://jellyfin.brzrkr.io
             description: Media Server
-            widget:
-              type: jellyfin
-              url: http://jellyfin.media.svc.cluster.local:8096
-              key: "{{HOMEPAGE_VAR_JELLYFIN_KEY}}"
-              enableBlocks: true
-              enableNowPlaying: true
         - Sonarr:
             icon: sonarr.png
             href: http://sonarr.brzrkr.io
@@ -106,17 +100,12 @@ data:
             widget:
               type: jellyseerr
               url: http://jellyseerr.media.svc.cluster.local:5055
-              key: "{{HOMEPAGE_VAR_JELLYSEERR_KEY}}"
+              key: MTc2NjcxODA4NTI5NTVjZDU4Y2IyLTVmYjktNDdjMS05N2Q5LTFjZTUyY2EzNjE1Yg==
     - Monitoring:
         - Grafana:
             icon: grafana.png
             href: http://grafana.brzrkr.io
             description: Dashboards
-            widget:
-              type: grafana
-              url: http://grafana.monitoring.svc.cluster.local:3000
-              username: admin
-              password: admin
         - Prometheus:
             icon: prometheus.png
             href: http://prometheus.brzrkr.io
