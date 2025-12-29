@@ -23,11 +23,28 @@ data:
                 timezones:
                   - timezone: America/New_York
                     label: Local
+                  - timezone: UTC
+                    label: UTC
 
               - type: weather
                 location: New York, United States
                 units: imperial
                 hour-format: 12h
+                hide-location: false
+
+              - type: markets
+                title: Markets
+                markets:
+                  - symbol: SPY
+                    name: S&P 500
+                  - symbol: BTC-USD
+                    name: Bitcoin
+                  - symbol: ETH-USD
+                    name: Ethereum
+                  - symbol: NVDA
+                    name: NVIDIA
+                  - symbol: AAPL
+                    name: Apple
 
               - type: monitor
                 cache: 1m
@@ -51,6 +68,9 @@ data:
                   - title: Transmission
                     url: http://gluetun-transmission.downloads.svc.cluster.local:9091
                     icon: si:transmission
+                  - title: Bazarr
+                    url: http://bazarr.media.svc.cluster.local:6767
+                    icon: si:bazarr
 
           - size: full
             widgets:
@@ -101,6 +121,11 @@ data:
                         url: https://status.brzrkr.io
                         icon: si:uptimekuma
 
+              - type: hacker-news
+                title: Hacker News
+                limit: 10
+                collapse-after: 5
+
               - type: rss
                 title: Tech News
                 style: horizontal-cards
@@ -109,32 +134,206 @@ data:
                     title: The Verge
                   - url: https://feeds.arstechnica.com/arstechnica/index
                     title: Ars Technica
-                limit: 6
+                  - url: https://www.wired.com/feed/rss
+                    title: Wired
+                limit: 9
                 collapse-after: 3
 
           - size: small
             widgets:
               - type: releases
-                title: Media Tools
+                title: Software Releases
                 repositories:
                   - Sonarr/Sonarr
                   - Radarr/Radarr
                   - Prowlarr/Prowlarr
                   - jellyfin/jellyfin
+                  - Bazarr/Bazarr
+                  - sabnzbd/sabnzbd
+                  - glanceapp/glance
 
               - type: reddit
                 subreddit: selfhosted
+                title: r/selfhosted
+                style: vertical-cards
+                limit: 5
+                collapse-after: 3
+
+              - type: reddit
+                subreddit: homelab
+                title: r/homelab
+                style: vertical-cards
+                limit: 5
+                collapse-after: 3
+
+      - name: Tech
+        width: wide
+        columns:
+          - size: small
+            widgets:
+              - type: hacker-news
+                title: Hacker News
+                limit: 15
+                collapse-after: 10
+
+              - type: lobsters
+                title: Lobsters
+                limit: 10
+                collapse-after: 5
+
+          - size: full
+            widgets:
+              - type: rss
+                title: Tech News
+                style: detailed-list
+                feeds:
+                  - url: https://www.theverge.com/rss/index.xml
+                    title: The Verge
+                  - url: https://feeds.arstechnica.com/arstechnica/index
+                    title: Ars Technica
+                  - url: https://www.wired.com/feed/rss
+                    title: Wired
+                  - url: https://techcrunch.com/feed/
+                    title: TechCrunch
+                  - url: https://www.engadget.com/rss.xml
+                    title: Engadget
+                limit: 20
+                collapse-after: 10
+
+          - size: small
+            widgets:
+              - type: reddit
+                subreddit: technology
+                title: r/technology
+                style: vertical-cards
+                limit: 10
+                collapse-after: 5
+
+              - type: reddit
+                subreddit: programming
+                title: r/programming
+                style: vertical-cards
+                limit: 10
+                collapse-after: 5
+
+      - name: Media
+        width: wide
+        columns:
+          - size: small
+            widgets:
+              - type: monitor
+                cache: 1m
+                title: Media Stack
+                sites:
+                  - title: Jellyfin
+                    url: http://jellyfin.media.svc.cluster.local:8096
+                    icon: si:jellyfin
+                  - title: Jellyseerr
+                    url: http://jellyseerr.media.svc.cluster.local:5055
+                    icon: si:jellyfin
+                  - title: Sonarr
+                    url: http://sonarr.media.svc.cluster.local:8989
+                    icon: si:sonarr
+                  - title: Radarr
+                    url: http://radarr.media.svc.cluster.local:7878
+                    icon: si:radarr
+                  - title: Prowlarr
+                    url: http://prowlarr.media.svc.cluster.local:9696
+                    icon: si:prowlarr
+                  - title: Bazarr
+                    url: http://bazarr.media.svc.cluster.local:6767
+                    icon: si:bazarr
+
+              - type: releases
+                title: Media Tool Updates
+                repositories:
+                  - Sonarr/Sonarr
+                  - Radarr/Radarr
+                  - Prowlarr/Prowlarr
+                  - jellyfin/jellyfin
+                  - Bazarr/Bazarr
+                  - Fallenbagel/jellyseerr
+
+          - size: full
+            widgets:
+              - type: bookmarks
+                groups:
+                  - title: Media Apps
+                    color: 217 90 75
+                    links:
+                      - title: Jellyfin
+                        url: https://jellyfin.brzrkr.io
+                        icon: si:jellyfin
+                      - title: Jellyseerr
+                        url: https://request.brzrkr.io
+                        icon: si:jellyfin
+                      - title: Sonarr
+                        url: https://sonarr.brzrkr.io
+                        icon: si:sonarr
+                      - title: Radarr
+                        url: https://radarr.brzrkr.io
+                        icon: si:radarr
+                      - title: Prowlarr
+                        url: https://prowlarr.brzrkr.io
+                        icon: si:prowlarr
+                      - title: Bazarr
+                        url: https://bazarr.brzrkr.io
+                        icon: si:bazarr
+
+              - type: reddit
+                subreddit: plex
+                title: r/plex
+                style: horizontal-cards
+                limit: 6
+                collapse-after: 3
+
+              - type: reddit
+                subreddit: jellyfin
+                title: r/jellyfin
+                style: horizontal-cards
+                limit: 6
+                collapse-after: 3
+
+          - size: small
+            widgets:
+              - type: reddit
+                subreddit: sonarr
+                title: r/sonarr
+                style: vertical-cards
+                limit: 5
+                collapse-after: 3
+
+              - type: reddit
+                subreddit: radarr
+                title: r/radarr
                 style: vertical-cards
                 limit: 5
                 collapse-after: 3
 
       - name: Downloads
         columns:
+          - size: small
+            widgets:
+              - type: monitor
+                cache: 1m
+                title: Download Stack
+                sites:
+                  - title: SABnzbd
+                    url: http://sabnzbd.downloads.svc.cluster.local:8080
+                    icon: si:sabnzbd
+                  - title: Transmission
+                    url: http://gluetun-transmission.downloads.svc.cluster.local:9091
+                    icon: si:transmission
+                  - title: Prowlarr
+                    url: http://prowlarr.media.svc.cluster.local:9696
+                    icon: si:prowlarr
+
           - size: full
             widgets:
               - type: bookmarks
                 groups:
                   - title: Download Clients
+                    color: 140 70 65
                     links:
                       - title: SABnzbd
                         url: https://sabnzbd.brzrkr.io
@@ -143,18 +342,70 @@ data:
                         url: https://transmission.brzrkr.io
                         icon: si:transmission
                   - title: Indexers
+                    color: 217 90 75
                     links:
                       - title: Prowlarr
                         url: https://prowlarr.brzrkr.io
                         icon: si:prowlarr
 
+              - type: reddit
+                subreddit: usenet
+                title: r/usenet
+                style: horizontal-cards
+                limit: 6
+                collapse-after: 3
+
+          - size: small
+            widgets:
+              - type: releases
+                title: Download Tools
+                repositories:
+                  - sabnzbd/sabnzbd
+                  - transmission/transmission
+                  - Prowlarr/Prowlarr
+
       - name: Monitoring
         columns:
+          - size: small
+            widgets:
+              - type: monitor
+                cache: 1m
+                title: All Services
+                sites:
+                  - title: Jellyfin
+                    url: http://jellyfin.media.svc.cluster.local:8096
+                    icon: si:jellyfin
+                  - title: Sonarr
+                    url: http://sonarr.media.svc.cluster.local:8989
+                    icon: si:sonarr
+                  - title: Radarr
+                    url: http://radarr.media.svc.cluster.local:7878
+                    icon: si:radarr
+                  - title: Prowlarr
+                    url: http://prowlarr.media.svc.cluster.local:9696
+                    icon: si:prowlarr
+                  - title: SABnzbd
+                    url: http://sabnzbd.downloads.svc.cluster.local:8080
+                    icon: si:sabnzbd
+                  - title: Transmission
+                    url: http://gluetun-transmission.downloads.svc.cluster.local:9091
+                    icon: si:transmission
+                  - title: Bazarr
+                    url: http://bazarr.media.svc.cluster.local:6767
+                    icon: si:bazarr
+                  - title: Grafana
+                    url: http://grafana.monitoring.svc.cluster.local:3000
+                    icon: si:grafana
+                  - title: Prometheus
+                    url: http://prometheus.monitoring.svc.cluster.local:9090
+                    icon: si:prometheus
+
           - size: full
             widgets:
               - type: bookmarks
                 groups:
                   - title: Dashboards
+                    color: 35 90 65
                     links:
                       - title: Grafana
                         url: https://grafana.brzrkr.io
@@ -165,3 +416,47 @@ data:
                       - title: Uptime Kuma
                         url: https://status.brzrkr.io
                         icon: si:uptimekuma
+
+          - size: small
+            widgets:
+              - type: releases
+                title: Monitoring Tools
+                repositories:
+                  - grafana/grafana
+                  - prometheus/prometheus
+                  - louislam/uptime-kuma
+
+      - name: Markets
+        width: wide
+        columns:
+          - size: full
+            widgets:
+              - type: markets
+                title: Stocks & Crypto
+                markets:
+                  - symbol: SPY
+                    name: S&P 500
+                  - symbol: QQQ
+                    name: NASDAQ 100
+                  - symbol: DIA
+                    name: Dow Jones
+                  - symbol: BTC-USD
+                    name: Bitcoin
+                  - symbol: ETH-USD
+                    name: Ethereum
+                  - symbol: SOL-USD
+                    name: Solana
+                  - symbol: NVDA
+                    name: NVIDIA
+                  - symbol: AAPL
+                    name: Apple
+                  - symbol: MSFT
+                    name: Microsoft
+                  - symbol: GOOGL
+                    name: Google
+                  - symbol: AMZN
+                    name: Amazon
+                  - symbol: META
+                    name: Meta
+                  - symbol: TSLA
+                    name: Tesla
