@@ -1,0 +1,167 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: glance-config
+  namespace: glance
+data:
+  glance.yml: |
+    theme:
+      background-color: 220 20 8
+      primary-color: 217 90 75
+      positive-color: 140 70 65
+      negative-color: 0 70 60
+
+    pages:
+      - name: Home
+        width: wide
+        columns:
+          - size: small
+            widgets:
+              - type: clock
+                hour-format: 12h
+                timezones:
+                  - timezone: America/New_York
+                    label: Local
+
+              - type: weather
+                location: New York, United States
+                units: imperial
+                hour-format: 12h
+
+              - type: monitor
+                cache: 1m
+                title: Services
+                sites:
+                  - title: Jellyfin
+                    url: http://jellyfin.media.svc.cluster.local:8096
+                    icon: si:jellyfin
+                  - title: Sonarr
+                    url: http://sonarr.media.svc.cluster.local:8989
+                    icon: si:sonarr
+                  - title: Radarr
+                    url: http://radarr.media.svc.cluster.local:7878
+                    icon: si:radarr
+                  - title: Prowlarr
+                    url: http://prowlarr.media.svc.cluster.local:9696
+                    icon: si:prowlarr
+                  - title: SABnzbd
+                    url: http://sabnzbd.downloads.svc.cluster.local:8080
+                    icon: si:sabnzbd
+                  - title: Transmission
+                    url: http://gluetun-transmission.downloads.svc.cluster.local:9091
+                    icon: si:transmission
+
+          - size: full
+            widgets:
+              - type: bookmarks
+                groups:
+                  - title: Media
+                    color: 217 90 75
+                    links:
+                      - title: Jellyfin
+                        url: https://jellyfin.brzrkr.io
+                        icon: si:jellyfin
+                      - title: Jellyseerr
+                        url: https://request.brzrkr.io
+                        icon: si:jellyfin
+                      - title: Sonarr
+                        url: https://sonarr.brzrkr.io
+                        icon: si:sonarr
+                      - title: Radarr
+                        url: https://radarr.brzrkr.io
+                        icon: si:radarr
+                      - title: Prowlarr
+                        url: https://prowlarr.brzrkr.io
+                        icon: si:prowlarr
+                      - title: Bazarr
+                        url: https://bazarr.brzrkr.io
+                        icon: si:bazarr
+
+                  - title: Downloads
+                    color: 140 70 65
+                    links:
+                      - title: SABnzbd
+                        url: https://sabnzbd.brzrkr.io
+                        icon: si:sabnzbd
+                      - title: Transmission
+                        url: https://transmission.brzrkr.io
+                        icon: si:transmission
+
+                  - title: Monitoring
+                    color: 35 90 65
+                    links:
+                      - title: Grafana
+                        url: https://grafana.brzrkr.io
+                        icon: si:grafana
+                      - title: Prometheus
+                        url: https://prometheus.brzrkr.io
+                        icon: si:prometheus
+                      - title: Uptime Kuma
+                        url: https://status.brzrkr.io
+                        icon: si:uptimekuma
+
+              - type: rss
+                title: Tech News
+                style: horizontal-cards
+                feeds:
+                  - url: https://www.theverge.com/rss/index.xml
+                    title: The Verge
+                  - url: https://feeds.arstechnica.com/arstechnica/index
+                    title: Ars Technica
+                limit: 6
+                collapse-after: 3
+
+          - size: small
+            widgets:
+              - type: releases
+                title: Media Tools
+                repositories:
+                  - Sonarr/Sonarr
+                  - Radarr/Radarr
+                  - Prowlarr/Prowlarr
+                  - jellyfin/jellyfin
+
+              - type: reddit
+                subreddit: selfhosted
+                style: vertical-cards
+                limit: 5
+                collapse-after: 3
+
+      - name: Downloads
+        columns:
+          - size: full
+            widgets:
+              - type: bookmarks
+                groups:
+                  - title: Download Clients
+                    links:
+                      - title: SABnzbd
+                        url: https://sabnzbd.brzrkr.io
+                        icon: si:sabnzbd
+                      - title: Transmission
+                        url: https://transmission.brzrkr.io
+                        icon: si:transmission
+                  - title: Indexers
+                    links:
+                      - title: Prowlarr
+                        url: https://prowlarr.brzrkr.io
+                        icon: si:prowlarr
+
+      - name: Monitoring
+        columns:
+          - size: full
+            widgets:
+              - type: bookmarks
+                groups:
+                  - title: Dashboards
+                    links:
+                      - title: Grafana
+                        url: https://grafana.brzrkr.io
+                        icon: si:grafana
+                      - title: Prometheus
+                        url: https://prometheus.brzrkr.io
+                        icon: si:prometheus
+                      - title: Uptime Kuma
+                        url: https://status.brzrkr.io
+                        icon: si:uptimekuma

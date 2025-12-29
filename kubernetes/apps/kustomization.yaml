@@ -4,4 +4,4 @@ kind: Kustomization
 resources:
   - downloads
   - media
-  - homarr
+  - glance
