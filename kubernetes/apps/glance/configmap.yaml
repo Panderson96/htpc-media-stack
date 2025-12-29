@@ -120,6 +120,22 @@ data:
                       - title: Uptime Kuma
                         url: https://status.brzrkr.io
                         icon: si:uptimekuma
+                      - title: Glances
+                        url: https://stats.brzrkr.io
+                        icon: si:gnome
+
+                  - title: Tools
+                    color: 280 70 65
+                    links:
+                      - title: IT-Tools
+                        url: https://tools.brzrkr.io
+                        icon: si:hackthebox
+                      - title: Stirling PDF
+                        url: https://pdf.brzrkr.io
+                        icon: si:adobeacrobatreader
+                      - title: Speedtest
+                        url: https://speedtest.brzrkr.io
+                        icon: si:speedtest
 
               - type: hacker-news
                 title: Hacker News
@@ -460,3 +476,56 @@ data:
                     name: Meta
                   - symbol: TSLA
                     name: Tesla
+
+      - name: Tools
+        width: wide
+        columns:
+          - size: small
+            widgets:
+              - type: monitor
+                cache: 1m
+                title: Tool Status
+                sites:
+                  - title: IT-Tools
+                    url: http://it-tools.tools.svc.cluster.local:80
+                    icon: si:hackthebox
+                  - title: Stirling PDF
+                    url: http://stirling-pdf.tools.svc.cluster.local:8080
+                    icon: si:adobeacrobatreader
+                  - title: Speedtest
+                    url: http://speedtest.tools.svc.cluster.local:80
+                    icon: si:speedtest
+
+              - type: iframe
+                source: https://stats.brzrkr.io
+                height: 400
+
+          - size: full
+            widgets:
+              - type: bookmarks
+                groups:
+                  - title: Utilities
+                    color: 280 70 65
+                    links:
+                      - title: IT-Tools
+                        url: https://tools.brzrkr.io
+                        icon: si:hackthebox
+                      - title: Stirling PDF
+                        url: https://pdf.brzrkr.io
+                        icon: si:adobeacrobatreader
+                      - title: Speedtest Tracker
+                        url: https://speedtest.brzrkr.io
+                        icon: si:speedtest
+                      - title: Glances
+                        url: https://stats.brzrkr.io
+                        icon: si:gnome
+
+          - size: small
+            widgets:
+              - type: releases
+                title: Tool Updates
+                repositories:
+                  - CorentinTh/it-tools
+                  - Stirling-Tools/Stirling-PDF
+                  - alexjustesen/speedtest-tracker
+                  - nicolargo/glances
