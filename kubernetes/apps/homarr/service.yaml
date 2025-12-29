@@ -2,16 +2,16 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: homepage
-  namespace: homepage
+  name: homarr
+  namespace: homarr
   labels:
-    app: homepage
+    app: homarr
 spec:
   type: ClusterIP
   ports:
-    - port: 3000
-      targetPort: 3000
+    - port: 7575
+      targetPort: 7575
       protocol: TCP
       name: web
   selector:
-    app: homepage
+    app: homarr

@@ -1,0 +1,79 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: recyclarr-config
+  namespace: media
+data:
+  recyclarr.yml: |
+    # Recyclarr Configuration
+    # Syncs TRaSH Guides quality profiles to Sonarr/Radarr
+
+    sonarr:
+      sonarr-main:
+        base_url: http://sonarr.media.svc.cluster.local:8989
+        api_key: 90a00b9e090b4f0f803fd3fb1298faa0
+
+        quality_definition:
+          type: series
+
+        quality_profiles:
+          - name: WEB-DL (1080p)
+            reset_unmatched_scores:
+              enabled: true
+            qualities:
+              - name: WEB 1080p
+                qualities:
+                  - WEBDL-1080p
+                  - WEBRip-1080p
+              - name: HDTV-1080p
+              - name: WEB 720p
+                qualities:
+                  - WEBDL-720p
+                  - WEBRip-720p
+              - name: HDTV-720p
+
+        custom_formats:
+          - trash_ids:
+              - 32b367365729d530ca1c124a0b180c64  # Bad Dual Groups
+              - 82d40da2bc6923f41e14394075dd4b03  # No-RlsGroup
+              - e1a997ddb54e3ecbfe06341ad323c458  # Obfuscated
+              - 06d66ab109d4d2eddb2794d21526d140  # Retags
+              - 1b3994c551cbb92a2c781af061f4ab44  # Scene
+            quality_profiles:
+              - name: WEB-DL (1080p)
+                score: -10000
+
+    radarr:
+      radarr-main:
+        base_url: http://radarr.media.svc.cluster.local:7878
+        api_key: 6a16b3b4b8da4dcaa522d49b27fd2f16
+
+        quality_definition:
+          type: movie
+
+        quality_profiles:
+          - name: HD Bluray + WEB
+            reset_unmatched_scores:
+              enabled: true
+            qualities:
+              - name: Bluray-1080p
+              - name: WEB 1080p
+                qualities:
+                  - WEBDL-1080p
+                  - WEBRip-1080p
+              - name: Bluray-720p
+              - name: WEB 720p
+                qualities:
+                  - WEBDL-720p
+                  - WEBRip-720p
+
+        custom_formats:
+          - trash_ids:
+              - b8cd450cbfa689c0259a01d9e29ba3d6  # 3D
+              - ed38b889b31be83fda192888e2286d83  # BR-DISK
+              - 90a6f9a284dff5103f6346090e6280c8  # LQ
+              - dc98083864ea246d05a42df0d05f81cc  # x265 (HD)
+            quality_profiles:
+              - name: HD Bluray + WEB
+                score: -10000

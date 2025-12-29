@@ -6,3 +6,4 @@ resources:
   - prometheus
   - grafana
   - node-exporter
+  - uptime-kuma

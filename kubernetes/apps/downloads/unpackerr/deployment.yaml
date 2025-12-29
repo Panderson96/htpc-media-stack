@@ -1,0 +1,90 @@
+---
+# Unpackerr - Extracts downloaded archives for Sonarr/Radarr
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: unpackerr
+  namespace: downloads
+  labels:
+    app: unpackerr
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: unpackerr
+  template:
+    metadata:
+      labels:
+        app: unpackerr
+    spec:
+      containers:
+        - name: unpackerr
+          image: golift/unpackerr:latest
+          env:
+            - name: TZ
+              value: "America/New_York"
+            - name: UN_DEBUG
+              value: "false"
+            - name: UN_LOG_FILE
+              value: ""
+            - name: UN_INTERVAL
+              value: "2m"
+            - name: UN_START_DELAY
+              value: "1m"
+            - name: UN_RETRY_DELAY
+              value: "5m"
+            - name: UN_MAX_RETRIES
+              value: "3"
+            - name: UN_PARALLEL
+              value: "1"
+            - name: UN_FILE_MODE
+              value: "0644"
+            - name: UN_DIR_MODE
+              value: "0755"
+            # Sonarr configuration
+            - name: UN_SONARR_0_URL
+              value: "http://sonarr.media.svc.cluster.local:8989"
+            - name: UN_SONARR_0_API_KEY
+              value: "90a00b9e090b4f0f803fd3fb1298faa0"
+            - name: UN_SONARR_0_PATHS_0
+              value: "/downloads/complete"
+            - name: UN_SONARR_0_PROTOCOLS
+              value: "torrent"
+            - name: UN_SONARR_0_TIMEOUT
+              value: "10s"
+            - name: UN_SONARR_0_DELETE_ORIG
+              value: "false"
+            - name: UN_SONARR_0_DELETE_DELAY
+              value: "5m"
+            # Radarr configuration
+            - name: UN_RADARR_0_URL
+              value: "http://radarr.media.svc.cluster.local:7878"
+            - name: UN_RADARR_0_API_KEY
+              value: "6a16b3b4b8da4dcaa522d49b27fd2f16"
+            - name: UN_RADARR_0_PATHS_0
+              value: "/downloads/complete"
+            - name: UN_RADARR_0_PROTOCOLS
+              value: "torrent"
+            - name: UN_RADARR_0_TIMEOUT
+              value: "10s"
+            - name: UN_RADARR_0_DELETE_ORIG
+              value: "false"
+            - name: UN_RADARR_0_DELETE_DELAY
+              value: "5m"
+          volumeMounts:
+            - name: downloads
+              mountPath: /downloads
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "25m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+      volumes:
+        - name: downloads
+          hostPath:
+            path: /data/media/downloads
+            type: DirectoryOrCreate
