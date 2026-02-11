@@ -1,0 +1,82 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: alloy-config
+  namespace: monitoring
+data:
+  config.alloy: |
+    // Grafana Alloy - Kubernetes log collector
+    // Replaces Promtail with modern, unified telemetry collector
+
+    // Discover Kubernetes pods on this node
+    discovery.kubernetes "pods" {
+      role = "pod"
+    }
+
+    // Relabel discovered targets with meaningful labels
+    discovery.relabel "pod_logs" {
+      targets = discovery.kubernetes.pods.targets
+
+      // Drop pods that opt out of log collection
+      rule {
+        source_labels = ["__meta_kubernetes_pod_annotation_alloy_grafana_com_scrape"]
+        action        = "drop"
+        regex         = "false"
+      }
+
+      // Set namespace label
+      rule {
+        source_labels = ["__meta_kubernetes_namespace"]
+        action        = "replace"
+        target_label  = "namespace"
+      }
+
+      // Set pod label
+      rule {
+        source_labels = ["__meta_kubernetes_pod_name"]
+        action        = "replace"
+        target_label  = "pod"
+      }
+
+      // Set container label
+      rule {
+        source_labels = ["__meta_kubernetes_pod_container_name"]
+        action        = "replace"
+        target_label  = "container"
+      }
+
+      // Set node label
+      rule {
+        source_labels = ["__meta_kubernetes_pod_node_name"]
+        action        = "replace"
+        target_label  = "node"
+      }
+
+      // Set app label from pod label
+      rule {
+        source_labels = ["__meta_kubernetes_pod_label_app"]
+        action        = "replace"
+        target_label  = "app"
+      }
+    }
+
+    // Collect logs from discovered pods
+    loki.source.kubernetes "pod_logs" {
+      targets    = discovery.relabel.pod_logs.output
+      forward_to = [loki.process.pod_logs.receiver]
+    }
+
+    // Process logs - parse CRI format
+    loki.process "pod_logs" {
+      stage.cri {}
+
+      forward_to = [loki.write.default.receiver]
+    }
+
+    // Write logs to Loki
+    loki.write "default" {
+      endpoint {
+        url = "http://loki.monitoring.svc.cluster.local:3100/loki/api/v1/push"
+      }
+    }
