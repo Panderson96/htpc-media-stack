@@ -1,15 +1,15 @@
 ---
 # NetworkPolicy for the downloads namespace
 #
-# NOTE: k3s uses flannel as the default CNI, which does NOT enforce
-# NetworkPolicies. These policies document intended network segmentation
-# and will be enforced if the CNI is switched to Calico, Cilium, or
-# another policy-aware CNI plugin.
+# NOTE: k3s v1.33+ uses kube-router's network policy controller alongside
+# flannel, which actively enforces NetworkPolicies. These rules are live.
 #
 # Allowed traffic:
 #   Ingress:
+#     - From within downloads namespace (Gluetun sidecar <-> download clients)
 #     - From media namespace (arr apps talking to download clients)
 #     - From kube-system namespace (traefik ingress controller)
+#     - From monitoring namespace (exportarr scraping metrics)
 #   Egress:
 #     - To media namespace (status callbacks to arr apps)
 #     - To DNS (kube-dns in kube-system)
@@ -26,6 +26,20 @@ spec:
   policyTypes:
     - Ingress
     - Egress
+---
+# Allow ingress within downloads namespace (Gluetun <-> SABnzbd/Transmission)
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-ingress-intra-namespace
+  namespace: downloads
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector: {}
 ---
 # Allow ingress from media namespace (Sonarr/Radarr -> SABnzbd/Transmission)
 apiVersion: networking.k8s.io/v1
@@ -58,6 +72,22 @@ spec:
         - namespaceSelector:
             matchLabels:
               kubernetes.io/metadata.name: kube-system
+---
+# Allow ingress from monitoring namespace (exportarr scraping metrics)
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-ingress-from-monitoring
+  namespace: downloads
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: monitoring
 ---
 # Allow egress to media namespace (callbacks to arr apps)
 apiVersion: networking.k8s.io/v1

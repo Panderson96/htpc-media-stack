@@ -1,10 +1,8 @@
 ---
 # NetworkPolicy for the tools namespace
 #
-# NOTE: k3s uses flannel as the default CNI, which does NOT enforce
-# NetworkPolicies. These policies document intended network segmentation
-# and will be enforced if the CNI is switched to Calico, Cilium, or
-# another policy-aware CNI plugin.
+# NOTE: k3s v1.33+ uses kube-router's network policy controller alongside
+# flannel, which actively enforces NetworkPolicies. These rules are live.
 #
 # Allowed traffic:
 #   Ingress:
