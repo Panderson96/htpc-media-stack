@@ -24,7 +24,7 @@ spec:
       containers:
         - name: fileflows
           image: revenz/fileflows:latest
-          command: ["bash", "-c", "apt-get update -qq && apt-get install -y -qq ffmpeg >/dev/null 2>&1 && exec /init"]
+          command: ["bash", "-c", "apt-get update -qq && apt-get install -y -qq ffmpeg >/dev/null 2>&1 && exec /app/docker-entrypoint.sh"]
           env:
             - name: TZ
               value: "America/New_York"
