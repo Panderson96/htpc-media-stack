@@ -7,74 +7,88 @@ metadata:
 data:
   config.alloy: |
     // Grafana Alloy - Kubernetes log collector
-    // Replaces Promtail with modern, unified telemetry collector
+    // Modern replacement for Promtail using file-based log tailing
 
-    // Discover Kubernetes pods on this node
+    // Discover Kubernetes pods
     discovery.kubernetes "pods" {
       role = "pod"
     }
 
-    // Relabel discovered targets with meaningful labels
+    // Relabel and set log file paths
     discovery.relabel "pod_logs" {
       targets = discovery.kubernetes.pods.targets
 
-      // Drop pods that opt out of log collection
+      // Drop pods that opt out
       rule {
         source_labels = ["__meta_kubernetes_pod_annotation_alloy_grafana_com_scrape"]
         action        = "drop"
         regex         = "false"
       }
 
+      // Only keep containers with an ID (running)
+      rule {
+        source_labels = ["__meta_kubernetes_pod_container_id"]
+        action        = "drop"
+        regex         = ""
+      }
+
+      // Set __path__ to the pod log file location
+      rule {
+        source_labels = ["__meta_kubernetes_pod_uid", "__meta_kubernetes_pod_container_name"]
+        target_label  = "__path__"
+        separator     = "/"
+        replacement   = "/var/log/pods/*$1/*.log"
+      }
+
       // Set namespace label
       rule {
         source_labels = ["__meta_kubernetes_namespace"]
-        action        = "replace"
         target_label  = "namespace"
       }
 
       // Set pod label
       rule {
         source_labels = ["__meta_kubernetes_pod_name"]
-        action        = "replace"
         target_label  = "pod"
       }
 
       // Set container label
       rule {
         source_labels = ["__meta_kubernetes_pod_container_name"]
-        action        = "replace"
         target_label  = "container"
       }
 
       // Set node label
       rule {
         source_labels = ["__meta_kubernetes_pod_node_name"]
-        action        = "replace"
         target_label  = "node"
       }
 
-      // Set app label from pod label
+      // Set app label
       rule {
         source_labels = ["__meta_kubernetes_pod_label_app"]
-        action        = "replace"
         target_label  = "app"
       }
     }
 
-    // Collect logs from discovered pods
-    loki.source.kubernetes "pod_logs" {
-      targets    = discovery.relabel.pod_logs.output
+    // Match log files from discovered pods
+    local.file_match "pod_logs" {
+      path_targets = discovery.relabel.pod_logs.output
+    }
+
+    // Tail log files
+    loki.source.file "pod_logs" {
+      targets    = local.file_match.pod_logs.targets
       forward_to = [loki.process.pod_logs.receiver]
     }
 
-    // Process logs - parse CRI format
+    // Parse CRI log format
     loki.process "pod_logs" {
       stage.cri {}
-
       forward_to = [loki.write.default.receiver]
     }
 
-    // Write logs to Loki
+    // Send logs to Loki
     loki.write "default" {
       endpoint {
         url = "http://loki.monitoring.svc.cluster.local:3100/loki/api/v1/push"
