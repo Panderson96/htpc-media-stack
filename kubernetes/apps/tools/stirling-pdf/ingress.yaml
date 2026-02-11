@@ -4,6 +4,8 @@ kind: Ingress
 metadata:
   name: stirling-pdf
   namespace: tools
+  annotations:
+    traefik.ingress.kubernetes.io/router.middlewares: security-crowdsec-bouncer@kubernetescrd
 spec:
   rules:
     - host: pdf.brzrkr.io

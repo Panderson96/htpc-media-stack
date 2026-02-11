@@ -2,19 +2,21 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: it-tools
+  name: gotify
   namespace: tools
+  labels:
+    app: gotify
   annotations:
     traefik.ingress.kubernetes.io/router.middlewares: security-crowdsec-bouncer@kubernetescrd
 spec:
   rules:
-    - host: tools.brzrkr.io
+    - host: gotify.brzrkr.io
       http:
         paths:
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: it-tools
+                name: gotify
                 port:
                   number: 80

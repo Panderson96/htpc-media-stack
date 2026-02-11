@@ -6,6 +6,8 @@ metadata:
   namespace: tools
   labels:
     app: glances
+  annotations:
+    traefik.ingress.kubernetes.io/router.middlewares: security-crowdsec-bouncer@kubernetescrd
 spec:
   rules:
     - host: stats.brzrkr.io

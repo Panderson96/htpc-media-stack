@@ -42,6 +42,8 @@ spec:
               mountPath: /etc/grafana/provisioning/dashboards
             - name: dashboards
               mountPath: /var/lib/grafana/dashboards
+            - name: media-dashboards
+              mountPath: /var/lib/grafana/dashboards/media
           resources:
             requests:
               memory: "128Mi"
@@ -75,3 +77,6 @@ spec:
         - name: dashboards
           configMap:
             name: grafana-dashboards
+        - name: media-dashboards
+          configMap:
+            name: grafana-media-dashboards

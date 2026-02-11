@@ -33,6 +33,14 @@ data:
         editable: true
         options:
           path: /var/lib/grafana/dashboards
+      - name: 'media'
+        orgId: 1
+        folder: 'Media Stack'
+        type: file
+        disableDeletion: false
+        editable: true
+        options:
+          path: /var/lib/grafana/dashboards/media
 ---
 apiVersion: v1
 kind: ConfigMap
