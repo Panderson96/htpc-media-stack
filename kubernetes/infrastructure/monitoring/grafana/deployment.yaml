@@ -41,7 +41,7 @@ spec:
             - name: dashboards-provider
               mountPath: /etc/grafana/provisioning/dashboards
             - name: dashboards
-              mountPath: /var/lib/grafana/dashboards
+              mountPath: /var/lib/grafana/dashboards/default
             - name: media-dashboards
               mountPath: /var/lib/grafana/dashboards/media
           resources:
